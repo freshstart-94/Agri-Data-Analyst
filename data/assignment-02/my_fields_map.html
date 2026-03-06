@@ -1,157 +1,924 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>My Fields - Soil Data</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        #container { display: flex; height: 100vh; }
-        #sidebar {
-            width: 320px;
-            background: #ffffff;
-            border-right: 1px solid #ddd;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        #sidebar h1 {
-            font-size: 1.3em;
-            margin-bottom: 5px;
-            color: #1B5E20;
-        }
-        .panel {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        .panel h3 {
-            font-size: 0.85em;
-            color: #333;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin: 6px 0;
-            font-size: 0.85em;
-        }
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            margin-right: 8px;
-        }
-        .stats {
-            font-size: 0.85em;
-            color: #666;
-        }
-        #map { flex: 1; }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      #container {
+        display: flex;
+        height: 100vh;
+      }
+      #sidebar {
+        width: 320px;
+        background: #ffffff;
+        border-right: 1px solid #ddd;
+        padding: 20px;
+        overflow-y: auto;
+      }
+      #sidebar h1 {
+        font-size: 1.3em;
+        margin-bottom: 5px;
+        color: #1b5e20;
+      }
+      .panel {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+      .panel h3 {
+        font-size: 0.85em;
+        color: #333;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 6px 0;
+        font-size: 0.85em;
+      }
+      .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        margin-right: 8px;
+      }
+      .stats {
+        font-size: 0.85em;
+        color: #666;
+      }
+      #map {
+        flex: 1;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="container">
-        <div id="sidebar">
-            <h1>🌾 My Fields</h1>
-            <p class="stats">Soil Data & Crop Classifications</p>
-            
-            <div class="panel">
-                <h3>Legend - Crops</h3>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #2E7D32;"></div>
-                    <span>Corn</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #F9A825;"></div>
-                    <span>Soybeans</span>
-                </div>
-            </div>
-            
-            <div class="panel">
-                <h3>Legend - Drainage</h3>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #1565C0;"></div>
-                    <span>Excessively drained</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #43A047;"></div>
-                    <span>Well drained</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #FFA000;"></div>
-                    <span>Somewhat poorly drained</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #C62828;"></div>
-                    <span>Poorly drained</span>
-                </div>
-            </div>
-            
-            <div class="panel">
-                <h3>Field Info</h3>
-                <p class="stats">Click a field for soil details</p>
-            </div>
+      <div id="sidebar">
+        <h1>🌾 My Fields</h1>
+        <p class="stats">Soil Data & Crop Classifications</p>
+
+        <div class="panel">
+          <h3>Legend - Crops</h3>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #2e7d32"></div>
+            <span>Corn</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #f9a825"></div>
+            <span>Soybeans</span>
+          </div>
         </div>
 
-        <div id="map"></div>
+        <div class="panel">
+          <h3>Legend - Drainage</h3>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #1565c0"></div>
+            <span>Excessively drained</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #43a047"></div>
+            <span>Well drained</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #ffa000"></div>
+            <span>Somewhat poorly drained</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #c62828"></div>
+            <span>Poorly drained</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Field Info</h3>
+          <p class="stats">Click a field for soil details</p>
+        </div>
+      </div>
+
+      <div id="map"></div>
     </div>
 
     <script>
-        var map = L.map('map').setView([41.071303100862366, -93.05138269587499], 8);
+      var map = L.map('map').setView(
+        [41.071303100862366, -93.05138269587499],
+        8
+      );
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(map);
 
-        var fieldData = {"type": "FeatureCollection", "features": [{"id": "0", "type": "Feature", "properties": {"field_id": "FIELD_0001", "region": "corn_belt", "crop_name": "corn", "area_acres": 6353.158446235238, "compname": "Galva", "om_r": 4.0, "ph1to1h2o_r": 5.7, "drainagecl": "Well drained", "claytotal_r": 32.0, "sandtotal_r": 4.0, "silttotal_r": 64.0}, "geometry": {"type": "Polygon", "coordinates": [[[-96.17366932034082, 42.77124070215894], [-96.15763488233591, 42.77124070215894], [-96.15763488233591, 42.78727514016385], [-96.17366932034082, 42.78727514016385], [-96.17366932034082, 42.77124070215894]]]}}, {"id": "1", "type": "Feature", "properties": {"field_id": "FIELD_0002", "region": "corn_belt", "crop_name": "corn", "area_acres": 229.19273128977736, "compname": "Clime", "om_r": 3.0, "ph1to1h2o_r": 7.5, "drainagecl": "Well drained", "claytotal_r": 41.0, "sandtotal_r": 5.0, "silttotal_r": 54.0}, "geometry": {"type": "Polygon", "coordinates": [[[-96.4415775491475, 38.9345890901451], [-96.43853204412846, 38.9345890901451], [-96.43853204412846, 38.937634595164134], [-96.4415775491475, 38.937634595164134], [-96.4415775491475, 38.9345890901451]]]}}, {"id": "2", "type": "Feature", "properties": {"field_id": "FIELD_0003", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 4648.755227901697, "compname": "Pits", "om_r": 3.0, "ph1to1h2o_r": 6.1, "drainagecl": "Well drained", "claytotal_r": 23.0, "sandtotal_r": 12.0, "silttotal_r": 65.0}, "geometry": {"type": "Polygon", "coordinates": [[[-96.57818981703713, 39.99539367057759], [-96.56447382452404, 39.99539367057759], [-96.56447382452404, 40.009109663090676], [-96.57818981703713, 40.009109663090676], [-96.57818981703713, 39.99539367057759]]]}}, {"id": "3", "type": "Feature", "properties": {"field_id": "FIELD_0004", "region": "corn_belt", "crop_name": "corn", "area_acres": 837.6105094139834, "compname": "Coloma", "om_r": 0.75, "ph1to1h2o_r": 5.9, "drainagecl": "Excessively drained", "claytotal_r": 5.0, "sandtotal_r": 93.6, "silttotal_r": 1.4}, "geometry": {"type": "Polygon", "coordinates": [[[-89.6784846439919, 43.81654806097586], [-89.67266253999968, 43.81654806097586], [-89.67266253999968, 43.82237016496808], [-89.6784846439919, 43.82237016496808], [-89.6784846439919, 43.81654806097586]]]}}, {"id": "4", "type": "Feature", "properties": {"field_id": "FIELD_0005", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 4182.351821614137, "compname": "Sogn", "om_r": 3.0, "ph1to1h2o_r": 7.3, "drainagecl": "Somewhat excessively drained", "claytotal_r": 21.5, "sandtotal_r": 26.1, "silttotal_r": 52.4}, "geometry": {"type": "Polygon", "coordinates": [[[-91.83168978216722, 43.94676447730291], [-91.81868002527844, 43.94676447730291], [-91.81868002527844, 43.9597742341917], [-91.83168978216722, 43.9597742341917], [-91.83168978216722, 43.94676447730291]]]}}, {"id": "5", "type": "Feature", "properties": {"field_id": "FIELD_0006", "region": "corn_belt", "crop_name": "corn", "area_acres": 4184.663707509324, "compname": "Water", "om_r": 3.6, "ph1to1h2o_r": 6.2, "drainagecl": "Somewhat poorly drained", "claytotal_r": 30.0, "sandtotal_r": 23.0, "silttotal_r": 47.0}, "geometry": {"type": "Polygon", "coordinates": [[[-95.09421527407207, 40.58516343580019], [-95.08120192196708, 40.58516343580019], [-95.08120192196708, 40.598176787905196], [-95.09421527407207, 40.598176787905196], [-95.09421527407207, 40.58516343580019]]]}}, {"id": "6", "type": "Feature", "properties": {"field_id": "FIELD_0007", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 946.7759981627179, "compname": "Ava", "om_r": 2.0, "ph1to1h2o_r": 6.3, "drainagecl": "Moderately well drained", "claytotal_r": 15.0, "sandtotal_r": 7.0, "silttotal_r": 78.0}, "geometry": {"type": "Polygon", "coordinates": [[[-88.26553975364928, 38.27689903721782], [-88.25934986952154, 38.27689903721782], [-88.25934986952154, 38.283088921345566], [-88.26553975364928, 38.283088921345566], [-88.26553975364928, 38.27689903721782]]]}}, {"id": "7", "type": "Feature", "properties": {"field_id": "FIELD_0008", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 3130.8866010397323, "compname": "Galva", "om_r": 4.0, "ph1to1h2o_r": 5.7, "drainagecl": "Well drained", "claytotal_r": 32.0, "sandtotal_r": 4.0, "silttotal_r": 64.0}, "geometry": {"type": "Polygon", "coordinates": [[[-96.00889028836212, 42.705427658412354], [-95.99763406847069, 42.705427658412354], [-95.99763406847069, 42.716683878303805], [-96.00889028836212, 42.716683878303805], [-96.00889028836212, 42.705427658412354]]]}}, {"id": "8", "type": "Feature", "properties": {"field_id": "FIELD_0009", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 5014.640126531131, "compname": "Water", "om_r": 2.0, "ph1to1h2o_r": 7.0, "drainagecl": "Moderately well drained", "claytotal_r": 21.0, "sandtotal_r": 5.0, "silttotal_r": 74.0}, "geometry": {"type": "Polygon", "coordinates": [[[-89.40771870048408, 40.79345459164059], [-89.3934731647895, 40.79345459164059], [-89.3934731647895, 40.807700127335174], [-89.40771870048408, 40.807700127335174], [-89.40771870048408, 40.79345459164059]]]}}, {"id": "9", "type": "Feature", "properties": {"field_id": "FIELD_0010", "region": "corn_belt", "crop_name": "corn", "area_acres": 9282.21111134296, "compname": "Water", "om_r": 3.0, "ph1to1h2o_r": 6.0, "drainagecl": "Somewhat poorly drained", "claytotal_r": 14.9, "sandtotal_r": 8.0, "silttotal_r": 77.1}, "geometry": {"type": "Polygon", "coordinates": [[[-88.52083531576433, 38.380618869614004], [-88.501453939169, 38.380618869614004], [-88.501453939169, 38.40000024620935], [-88.52083531576433, 38.40000024620935], [-88.52083531576433, 38.380618869614004]]]}}, {"id": "10", "type": "Feature", "properties": {"field_id": "FIELD_0011", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 936.4658857716369, "compname": "Water", "om_r": 3.0, "ph1to1h2o_r": 5.7, "drainagecl": "Moderately well drained", "claytotal_r": 24.0, "sandtotal_r": 7.0, "silttotal_r": 69.0}, "geometry": {"type": "Polygon", "coordinates": [[[-97.84341552222845, 40.309420970808894], [-97.83725943336727, 40.309420970808894], [-97.83725943336727, 40.3155770596701], [-97.84341552222845, 40.3155770596701], [-97.84341552222845, 40.309420970808894]]]}}, {"id": "11", "type": "Feature", "properties": {"field_id": "FIELD_0012", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 2942.965606319296, "compname": "Wymore", "om_r": 3.0, "ph1to1h2o_r": 6.0, "drainagecl": "Moderately well drained", "claytotal_r": 35.0, "sandtotal_r": 4.0, "silttotal_r": 61.0}, "geometry": {"type": "Polygon", "coordinates": [[[-96.78507424374321, 40.6354583702466], [-96.77416105936122, 40.6354583702466], [-96.77416105936122, 40.64637155462861], [-96.78507424374321, 40.64637155462861], [-96.78507424374321, 40.6354583702466]]]}}, {"id": "12", "type": "Feature", "properties": {"field_id": "FIELD_0013", "region": "corn_belt", "crop_name": "corn", "area_acres": 688.9553903898931, "compname": "Winfield", "om_r": 2.5, "ph1to1h2o_r": 5.6, "drainagecl": "Moderately well drained", "claytotal_r": 14.3, "sandtotal_r": 3.0, "silttotal_r": 82.7}, "geometry": {"type": "Polygon", "coordinates": [[[-94.09203404905769, 39.03754779625654], [-94.0867537994775, 39.03754779625654], [-94.0867537994775, 39.04282804583672], [-94.09203404905769, 39.04282804583672], [-94.09203404905769, 39.03754779625654]]]}}, {"id": "13", "type": "Feature", "properties": {"field_id": "FIELD_0014", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 3464.520966817554, "compname": "Bevier", "om_r": 3.0, "ph1to1h2o_r": 6.2, "drainagecl": "Somewhat poorly drained", "claytotal_r": 30.0, "sandtotal_r": 6.0, "silttotal_r": 64.0}, "geometry": {"type": "Polygon", "coordinates": [[[-92.80524018073598, 39.86434606402237], [-92.79339939570781, 39.86434606402237], [-92.79339939570781, 39.876186849050555], [-92.80524018073598, 39.876186849050555], [-92.80524018073598, 39.86434606402237]]]}}, {"id": "14", "type": "Feature", "properties": {"field_id": "FIELD_0015", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 2518.5134147530703, "compname": "Water", "om_r": 3.0, "ph1to1h2o_r": 6.0, "drainagecl": "Somewhat poorly drained", "claytotal_r": 14.9, "sandtotal_r": 8.0, "silttotal_r": 77.1}, "geometry": {"type": "Polygon", "coordinates": [[[-89.58220004125035, 38.182831967533026], [-89.5721044668497, 38.182831967533026], [-89.5721044668497, 38.19292754193368], [-89.58220004125035, 38.19292754193368], [-89.58220004125035, 38.182831967533026]]]}}, {"id": "15", "type": "Feature", "properties": {"field_id": "FIELD_0016", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 8543.100838470966, "compname": "Orwood", "om_r": 3.0, "ph1to1h2o_r": 6.5, "drainagecl": "Well drained", "claytotal_r": 21.0, "sandtotal_r": 26.3, "silttotal_r": 52.7}, "geometry": {"type": "Polygon", "coordinates": [[[-92.03029708000436, 43.35966723445068], [-92.01170334377393, 43.35966723445068], [-92.01170334377393, 43.3782609706811], [-92.03029708000436, 43.3782609706811], [-92.03029708000436, 43.35966723445068]]]}}, {"id": "16", "type": "Feature", "properties": {"field_id": "FIELD_0017", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 9205.474141509474, "compname": "Zook", "om_r": 3.0, "ph1to1h2o_r": 6.7, "drainagecl": "Poorly drained", "claytotal_r": 23.0, "sandtotal_r": 12.5, "silttotal_r": 64.5}, "geometry": {"type": "Polygon", "coordinates": [[[-92.80130794796091, 41.41301329821326], [-92.78200685152262, 41.41301329821326], [-92.78200685152262, 41.43231439465154], [-92.80130794796091, 41.43231439465154], [-92.80130794796091, 41.41301329821326]]]}}, {"id": "17", "type": "Feature", "properties": {"field_id": "FIELD_0018", "region": "corn_belt", "crop_name": "corn", "area_acres": 7072.012629748654, "compname": "Marshall", "om_r": 3.3, "ph1to1h2o_r": 5.9, "drainagecl": "Well drained", "claytotal_r": 31.0, "sandtotal_r": 3.0, "silttotal_r": 66.0}, "geometry": {"type": "Polygon", "coordinates": [[[-95.2949683198434, 40.32360510055453], [-95.27805104467868, 40.32360510055453], [-95.27805104467868, 40.34052237571926], [-95.2949683198434, 40.34052237571926], [-95.2949683198434, 40.32360510055453]]]}}, {"id": "18", "type": "Feature", "properties": {"field_id": "FIELD_0019", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 1199.766274267996, "compname": "Mixed alluvial land", "om_r": 2.0, "ph1to1h2o_r": 6.2, "drainagecl": "Poorly drained", "claytotal_r": 21.0, "sandtotal_r": 4.0, "silttotal_r": 75.0}, "geometry": {"type": "Polygon", "coordinates": [[[-91.93314151577137, 43.788047850946626], [-91.92617353049495, 43.788047850946626], [-91.92617353049495, 43.79501583622303], [-91.93314151577137, 43.79501583622303], [-91.93314151577137, 43.788047850946626]]]}}, {"id": "19", "type": "Feature", "properties": {"field_id": "FIELD_0020", "region": "corn_belt", "crop_name": "corn", "area_acres": 9652.289674992173, "compname": "Albaton", "om_r": 2.5, "ph1to1h2o_r": 7.9, "drainagecl": "Poorly drained", "claytotal_r": 50.0, "sandtotal_r": 5.3, "silttotal_r": 44.7}, "geometry": {"type": "Polygon", "coordinates": [[[-97.2643755456317, 42.803299902094835], [-97.24461158077288, 42.803299902094835], [-97.24461158077288, 42.823063866953646], [-97.2643755456317, 42.823063866953646], [-97.2643755456317, 42.803299902094835]]]}}, {"id": "20", "type": "Feature", "properties": {"field_id": "FIELD_0021", "region": "corn_belt", "crop_name": "soybeans", "area_acres": 125.47955478031986, "compname": "Sharpsburg", "om_r": 3.8, "ph1to1h2o_r": 6.2, "drainagecl": "Moderately well drained", "claytotal_r": 33.0, "sandtotal_r": 2.0, "silttotal_r": 65.0}, "geometry": {"type": "Polygon", "coordinates": [[[-95.06624497122405, 40.36816239064898], [-95.06399153441518, 40.36816239064898], [-95.06399153441518, 40.370415827457855], [-95.06624497122405, 40.370415827457855], [-95.06624497122405, 40.36816239064898]]]}}, {"id": "21", "type": "Feature", "properties": {"field_id": "FIELD_0022", "region": "corn_belt", "crop_name": "corn", "area_acres": 6233.614741428244, "compname": "Chelsea", "om_r": 1.0, "ph1to1h2o_r": 6.5, "drainagecl": "Excessively drained", "claytotal_r": 11.5, "sandtotal_r": 84.3, "silttotal_r": 4.2}, "geometry": {"type": "Polygon", "coordinates": [[[-90.7178697527103, 42.233202629965525], [-90.70198688646994, 42.233202629965525], [-90.70198688646994, 42.24908549620587], [-90.7178697527103, 42.24908549620587], [-90.7178697527103, 42.233202629965525]]]}}, {"id": "22", "type": "Feature", "properties": {"field_id": "FIELD_0023", "region": "corn_belt", "crop_name": "corn", "area_acres": 8429.112633600815, "compname": "Water", "om_r": 2.5, "ph1to1h2o_r": 7.0, "drainagecl": "Well drained", "claytotal_r": 14.0, "sandtotal_r": 14.2, "silttotal_r": 71.8}, "geometry": {"type": "Polygon", "coordinates": [[[-91.49846438206045, 43.5485706340002], [-91.47999510790065, 43.5485706340002], [-91.47999510790065, 43.567039908159984], [-91.49846438206045, 43.567039908159984], [-91.49846438206045, 43.5485706340002]]]}}, {"id": "23", "type": "Feature", "properties": {"field_id": "FIELD_0024", "region": "corn_belt", "crop_name": "corn", "area_acres": 244.26496101713565, "compname": "Water", "om_r": 2.5, "ph1to1h2o_r": 6.5, "drainagecl": "Well drained", "claytotal_r": 22.0, "sandtotal_r": 40.0, "silttotal_r": 38.0}, "geometry": {"type": "Polygon", "coordinates": [[[-94.69259177662607, 41.73821673581277], [-94.68944772632094, 41.73821673581277], [-94.68944772632094, 41.74136078611792], [-94.69259177662607, 41.74136078611792], [-94.69259177662607, 41.73821673581277]]]}}, {"id": "24", "type": "Feature", "properties": {"field_id": "FIELD_0025", "region": "corn_belt", "crop_name": "corn", "area_acres": 3950.0920955700585, "compname": "Orwood", "om_r": 2.5, "ph1to1h2o_r": 6.5, "drainagecl": "Well drained", "claytotal_r": 17.0, "sandtotal_r": 29.3, "silttotal_r": 53.7}, "geometry": {"type": "Polygon", "coordinates": [[[-91.3470981139144, 42.00672583589227], [-91.33445475373566, 42.00672583589227], [-91.33445475373566, 42.01936919607101], [-91.3470981139144, 42.01936919607101], [-91.3470981139144, 42.00672583589227]]]}}]};
-
-        function getDrainageColor(drainage) {
-            if (!drainage) return '#9E9E9E';
-            if (drainage.includes('Excessively')) return '#1565C0';
-            if (drainage.includes('Well drained')) return '#43A047';
-            if (drainage.includes('Somewhat')) return '#FFA000';
-            if (drainage.includes('Poorly')) return '#C62828';
-            if (drainage.includes('Moderately')) return '#7CB342';
-            return '#9E9E9E';
-        }
-
-        function getCropColor(crop) {
-            if (crop === 'corn') return '#2E7D32';
-            if (crop === 'soybeans') return '#F9A825';
-            return '#9E9E9E';
-        }
-
-        var fieldsLayer = L.geoJSON(fieldData, {
-            style: function(feature) {
-                return {
-                    color: '#1B5E20',
-                    weight: 2,
-                    fillColor: getDrainageColor(feature.properties.drainagecl),
-                    fillOpacity: 0.6
-                };
+      var fieldData = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            id: '0',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0001',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 6353.158446235238,
+              compname: 'Galva',
+              om_r: 4.0,
+              ph1to1h2o_r: 5.7,
+              drainagecl: 'Well drained',
+              claytotal_r: 32.0,
+              sandtotal_r: 4.0,
+              silttotal_r: 64.0,
             },
-            onEachFeature: function(feature, layer) {
-                var props = feature.properties;
-                var popupContent = '<b>Field:</b> ' + props.field_id + '<br>' +
-                    '<b>Area:</b> ' + props.area_acres.toFixed(1) + ' acres<br>' +
-                    '<b>Crop:</b> ' + props.crop_name + '<br>' +
-                    '<hr style="margin: 8px 0;">' +
-                    '<b>Soil Type:</b> ' + (props.compname || 'N/A') + '<br>' +
-                    '<b>Drainage:</b> ' + (props.drainagecl || 'N/A') + '<br>' +
-                    '<b>Organic Matter:</b> ' + (props.om_r ? props.om_r + '%' : 'N/A') + '<br>' +
-                    '<b>pH:</b> ' + (props.ph1to1h2o_r || 'N/A') + '<br>' +
-                    '<b>Clay:</b> ' + (props.claytotal_r ? props.claytotal_r + '%' : 'N/A') + '<br>' +
-                    '<b>Sand:</b> ' + (props.sandtotal_r ? props.sandtotal_r + '%' : 'N/A') + '<br>' +
-                    '<b>Silt:</b> ' + (props.silttotal_r ? props.silttotal_r + '%' : 'N/A');
-                layer.bindPopup(popupContent);
-            }
-        }).addTo(map);
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-96.17366932034082, 42.77124070215894],
+                  [-96.15763488233591, 42.77124070215894],
+                  [-96.15763488233591, 42.78727514016385],
+                  [-96.17366932034082, 42.78727514016385],
+                  [-96.17366932034082, 42.77124070215894],
+                ],
+              ],
+            },
+          },
+          {
+            id: '1',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0002',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 229.19273128977736,
+              compname: 'Clime',
+              om_r: 3.0,
+              ph1to1h2o_r: 7.5,
+              drainagecl: 'Well drained',
+              claytotal_r: 41.0,
+              sandtotal_r: 5.0,
+              silttotal_r: 54.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-96.4415775491475, 38.9345890901451],
+                  [-96.43853204412846, 38.9345890901451],
+                  [-96.43853204412846, 38.937634595164134],
+                  [-96.4415775491475, 38.937634595164134],
+                  [-96.4415775491475, 38.9345890901451],
+                ],
+              ],
+            },
+          },
+          {
+            id: '2',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0003',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 4648.755227901697,
+              compname: 'Pits',
+              om_r: 3.0,
+              ph1to1h2o_r: 6.1,
+              drainagecl: 'Well drained',
+              claytotal_r: 23.0,
+              sandtotal_r: 12.0,
+              silttotal_r: 65.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-96.57818981703713, 39.99539367057759],
+                  [-96.56447382452404, 39.99539367057759],
+                  [-96.56447382452404, 40.009109663090676],
+                  [-96.57818981703713, 40.009109663090676],
+                  [-96.57818981703713, 39.99539367057759],
+                ],
+              ],
+            },
+          },
+          {
+            id: '3',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0004',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 837.6105094139834,
+              compname: 'Coloma',
+              om_r: 0.75,
+              ph1to1h2o_r: 5.9,
+              drainagecl: 'Excessively drained',
+              claytotal_r: 5.0,
+              sandtotal_r: 93.6,
+              silttotal_r: 1.4,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-89.6784846439919, 43.81654806097586],
+                  [-89.67266253999968, 43.81654806097586],
+                  [-89.67266253999968, 43.82237016496808],
+                  [-89.6784846439919, 43.82237016496808],
+                  [-89.6784846439919, 43.81654806097586],
+                ],
+              ],
+            },
+          },
+          {
+            id: '4',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0005',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 4182.351821614137,
+              compname: 'Sogn',
+              om_r: 3.0,
+              ph1to1h2o_r: 7.3,
+              drainagecl: 'Somewhat excessively drained',
+              claytotal_r: 21.5,
+              sandtotal_r: 26.1,
+              silttotal_r: 52.4,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-91.83168978216722, 43.94676447730291],
+                  [-91.81868002527844, 43.94676447730291],
+                  [-91.81868002527844, 43.9597742341917],
+                  [-91.83168978216722, 43.9597742341917],
+                  [-91.83168978216722, 43.94676447730291],
+                ],
+              ],
+            },
+          },
+          {
+            id: '5',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0006',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 4184.663707509324,
+              compname: 'Water',
+              om_r: 3.6,
+              ph1to1h2o_r: 6.2,
+              drainagecl: 'Somewhat poorly drained',
+              claytotal_r: 30.0,
+              sandtotal_r: 23.0,
+              silttotal_r: 47.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-95.09421527407207, 40.58516343580019],
+                  [-95.08120192196708, 40.58516343580019],
+                  [-95.08120192196708, 40.598176787905196],
+                  [-95.09421527407207, 40.598176787905196],
+                  [-95.09421527407207, 40.58516343580019],
+                ],
+              ],
+            },
+          },
+          {
+            id: '6',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0007',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 946.7759981627179,
+              compname: 'Ava',
+              om_r: 2.0,
+              ph1to1h2o_r: 6.3,
+              drainagecl: 'Moderately well drained',
+              claytotal_r: 15.0,
+              sandtotal_r: 7.0,
+              silttotal_r: 78.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-88.26553975364928, 38.27689903721782],
+                  [-88.25934986952154, 38.27689903721782],
+                  [-88.25934986952154, 38.283088921345566],
+                  [-88.26553975364928, 38.283088921345566],
+                  [-88.26553975364928, 38.27689903721782],
+                ],
+              ],
+            },
+          },
+          {
+            id: '7',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0008',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 3130.8866010397323,
+              compname: 'Galva',
+              om_r: 4.0,
+              ph1to1h2o_r: 5.7,
+              drainagecl: 'Well drained',
+              claytotal_r: 32.0,
+              sandtotal_r: 4.0,
+              silttotal_r: 64.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-96.00889028836212, 42.705427658412354],
+                  [-95.99763406847069, 42.705427658412354],
+                  [-95.99763406847069, 42.716683878303805],
+                  [-96.00889028836212, 42.716683878303805],
+                  [-96.00889028836212, 42.705427658412354],
+                ],
+              ],
+            },
+          },
+          {
+            id: '8',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0009',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 5014.640126531131,
+              compname: 'Water',
+              om_r: 2.0,
+              ph1to1h2o_r: 7.0,
+              drainagecl: 'Moderately well drained',
+              claytotal_r: 21.0,
+              sandtotal_r: 5.0,
+              silttotal_r: 74.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-89.40771870048408, 40.79345459164059],
+                  [-89.3934731647895, 40.79345459164059],
+                  [-89.3934731647895, 40.807700127335174],
+                  [-89.40771870048408, 40.807700127335174],
+                  [-89.40771870048408, 40.79345459164059],
+                ],
+              ],
+            },
+          },
+          {
+            id: '9',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0010',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 9282.21111134296,
+              compname: 'Water',
+              om_r: 3.0,
+              ph1to1h2o_r: 6.0,
+              drainagecl: 'Somewhat poorly drained',
+              claytotal_r: 14.9,
+              sandtotal_r: 8.0,
+              silttotal_r: 77.1,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-88.52083531576433, 38.380618869614004],
+                  [-88.501453939169, 38.380618869614004],
+                  [-88.501453939169, 38.40000024620935],
+                  [-88.52083531576433, 38.40000024620935],
+                  [-88.52083531576433, 38.380618869614004],
+                ],
+              ],
+            },
+          },
+          {
+            id: '10',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0011',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 936.4658857716369,
+              compname: 'Water',
+              om_r: 3.0,
+              ph1to1h2o_r: 5.7,
+              drainagecl: 'Moderately well drained',
+              claytotal_r: 24.0,
+              sandtotal_r: 7.0,
+              silttotal_r: 69.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-97.84341552222845, 40.309420970808894],
+                  [-97.83725943336727, 40.309420970808894],
+                  [-97.83725943336727, 40.3155770596701],
+                  [-97.84341552222845, 40.3155770596701],
+                  [-97.84341552222845, 40.309420970808894],
+                ],
+              ],
+            },
+          },
+          {
+            id: '11',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0012',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 2942.965606319296,
+              compname: 'Wymore',
+              om_r: 3.0,
+              ph1to1h2o_r: 6.0,
+              drainagecl: 'Moderately well drained',
+              claytotal_r: 35.0,
+              sandtotal_r: 4.0,
+              silttotal_r: 61.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-96.78507424374321, 40.6354583702466],
+                  [-96.77416105936122, 40.6354583702466],
+                  [-96.77416105936122, 40.64637155462861],
+                  [-96.78507424374321, 40.64637155462861],
+                  [-96.78507424374321, 40.6354583702466],
+                ],
+              ],
+            },
+          },
+          {
+            id: '12',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0013',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 688.9553903898931,
+              compname: 'Winfield',
+              om_r: 2.5,
+              ph1to1h2o_r: 5.6,
+              drainagecl: 'Moderately well drained',
+              claytotal_r: 14.3,
+              sandtotal_r: 3.0,
+              silttotal_r: 82.7,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-94.09203404905769, 39.03754779625654],
+                  [-94.0867537994775, 39.03754779625654],
+                  [-94.0867537994775, 39.04282804583672],
+                  [-94.09203404905769, 39.04282804583672],
+                  [-94.09203404905769, 39.03754779625654],
+                ],
+              ],
+            },
+          },
+          {
+            id: '13',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0014',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 3464.520966817554,
+              compname: 'Bevier',
+              om_r: 3.0,
+              ph1to1h2o_r: 6.2,
+              drainagecl: 'Somewhat poorly drained',
+              claytotal_r: 30.0,
+              sandtotal_r: 6.0,
+              silttotal_r: 64.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-92.80524018073598, 39.86434606402237],
+                  [-92.79339939570781, 39.86434606402237],
+                  [-92.79339939570781, 39.876186849050555],
+                  [-92.80524018073598, 39.876186849050555],
+                  [-92.80524018073598, 39.86434606402237],
+                ],
+              ],
+            },
+          },
+          {
+            id: '14',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0015',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 2518.5134147530703,
+              compname: 'Water',
+              om_r: 3.0,
+              ph1to1h2o_r: 6.0,
+              drainagecl: 'Somewhat poorly drained',
+              claytotal_r: 14.9,
+              sandtotal_r: 8.0,
+              silttotal_r: 77.1,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-89.58220004125035, 38.182831967533026],
+                  [-89.5721044668497, 38.182831967533026],
+                  [-89.5721044668497, 38.19292754193368],
+                  [-89.58220004125035, 38.19292754193368],
+                  [-89.58220004125035, 38.182831967533026],
+                ],
+              ],
+            },
+          },
+          {
+            id: '15',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0016',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 8543.100838470966,
+              compname: 'Orwood',
+              om_r: 3.0,
+              ph1to1h2o_r: 6.5,
+              drainagecl: 'Well drained',
+              claytotal_r: 21.0,
+              sandtotal_r: 26.3,
+              silttotal_r: 52.7,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-92.03029708000436, 43.35966723445068],
+                  [-92.01170334377393, 43.35966723445068],
+                  [-92.01170334377393, 43.3782609706811],
+                  [-92.03029708000436, 43.3782609706811],
+                  [-92.03029708000436, 43.35966723445068],
+                ],
+              ],
+            },
+          },
+          {
+            id: '16',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0017',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 9205.474141509474,
+              compname: 'Zook',
+              om_r: 3.0,
+              ph1to1h2o_r: 6.7,
+              drainagecl: 'Poorly drained',
+              claytotal_r: 23.0,
+              sandtotal_r: 12.5,
+              silttotal_r: 64.5,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-92.80130794796091, 41.41301329821326],
+                  [-92.78200685152262, 41.41301329821326],
+                  [-92.78200685152262, 41.43231439465154],
+                  [-92.80130794796091, 41.43231439465154],
+                  [-92.80130794796091, 41.41301329821326],
+                ],
+              ],
+            },
+          },
+          {
+            id: '17',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0018',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 7072.012629748654,
+              compname: 'Marshall',
+              om_r: 3.3,
+              ph1to1h2o_r: 5.9,
+              drainagecl: 'Well drained',
+              claytotal_r: 31.0,
+              sandtotal_r: 3.0,
+              silttotal_r: 66.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-95.2949683198434, 40.32360510055453],
+                  [-95.27805104467868, 40.32360510055453],
+                  [-95.27805104467868, 40.34052237571926],
+                  [-95.2949683198434, 40.34052237571926],
+                  [-95.2949683198434, 40.32360510055453],
+                ],
+              ],
+            },
+          },
+          {
+            id: '18',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0019',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 1199.766274267996,
+              compname: 'Mixed alluvial land',
+              om_r: 2.0,
+              ph1to1h2o_r: 6.2,
+              drainagecl: 'Poorly drained',
+              claytotal_r: 21.0,
+              sandtotal_r: 4.0,
+              silttotal_r: 75.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-91.93314151577137, 43.788047850946626],
+                  [-91.92617353049495, 43.788047850946626],
+                  [-91.92617353049495, 43.79501583622303],
+                  [-91.93314151577137, 43.79501583622303],
+                  [-91.93314151577137, 43.788047850946626],
+                ],
+              ],
+            },
+          },
+          {
+            id: '19',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0020',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 9652.289674992173,
+              compname: 'Albaton',
+              om_r: 2.5,
+              ph1to1h2o_r: 7.9,
+              drainagecl: 'Poorly drained',
+              claytotal_r: 50.0,
+              sandtotal_r: 5.3,
+              silttotal_r: 44.7,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-97.2643755456317, 42.803299902094835],
+                  [-97.24461158077288, 42.803299902094835],
+                  [-97.24461158077288, 42.823063866953646],
+                  [-97.2643755456317, 42.823063866953646],
+                  [-97.2643755456317, 42.803299902094835],
+                ],
+              ],
+            },
+          },
+          {
+            id: '20',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0021',
+              region: 'corn_belt',
+              crop_name: 'soybeans',
+              area_acres: 125.47955478031986,
+              compname: 'Sharpsburg',
+              om_r: 3.8,
+              ph1to1h2o_r: 6.2,
+              drainagecl: 'Moderately well drained',
+              claytotal_r: 33.0,
+              sandtotal_r: 2.0,
+              silttotal_r: 65.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-95.06624497122405, 40.36816239064898],
+                  [-95.06399153441518, 40.36816239064898],
+                  [-95.06399153441518, 40.370415827457855],
+                  [-95.06624497122405, 40.370415827457855],
+                  [-95.06624497122405, 40.36816239064898],
+                ],
+              ],
+            },
+          },
+          {
+            id: '21',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0022',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 6233.614741428244,
+              compname: 'Chelsea',
+              om_r: 1.0,
+              ph1to1h2o_r: 6.5,
+              drainagecl: 'Excessively drained',
+              claytotal_r: 11.5,
+              sandtotal_r: 84.3,
+              silttotal_r: 4.2,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-90.7178697527103, 42.233202629965525],
+                  [-90.70198688646994, 42.233202629965525],
+                  [-90.70198688646994, 42.24908549620587],
+                  [-90.7178697527103, 42.24908549620587],
+                  [-90.7178697527103, 42.233202629965525],
+                ],
+              ],
+            },
+          },
+          {
+            id: '22',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0023',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 8429.112633600815,
+              compname: 'Water',
+              om_r: 2.5,
+              ph1to1h2o_r: 7.0,
+              drainagecl: 'Well drained',
+              claytotal_r: 14.0,
+              sandtotal_r: 14.2,
+              silttotal_r: 71.8,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-91.49846438206045, 43.5485706340002],
+                  [-91.47999510790065, 43.5485706340002],
+                  [-91.47999510790065, 43.567039908159984],
+                  [-91.49846438206045, 43.567039908159984],
+                  [-91.49846438206045, 43.5485706340002],
+                ],
+              ],
+            },
+          },
+          {
+            id: '23',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0024',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 244.26496101713565,
+              compname: 'Water',
+              om_r: 2.5,
+              ph1to1h2o_r: 6.5,
+              drainagecl: 'Well drained',
+              claytotal_r: 22.0,
+              sandtotal_r: 40.0,
+              silttotal_r: 38.0,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-94.69259177662607, 41.73821673581277],
+                  [-94.68944772632094, 41.73821673581277],
+                  [-94.68944772632094, 41.74136078611792],
+                  [-94.69259177662607, 41.74136078611792],
+                  [-94.69259177662607, 41.73821673581277],
+                ],
+              ],
+            },
+          },
+          {
+            id: '24',
+            type: 'Feature',
+            properties: {
+              field_id: 'FIELD_0025',
+              region: 'corn_belt',
+              crop_name: 'corn',
+              area_acres: 3950.0920955700585,
+              compname: 'Orwood',
+              om_r: 2.5,
+              ph1to1h2o_r: 6.5,
+              drainagecl: 'Well drained',
+              claytotal_r: 17.0,
+              sandtotal_r: 29.3,
+              silttotal_r: 53.7,
+            },
+            geometry: {
+              type: 'Polygon',
+              coordinates: [
+                [
+                  [-91.3470981139144, 42.00672583589227],
+                  [-91.33445475373566, 42.00672583589227],
+                  [-91.33445475373566, 42.01936919607101],
+                  [-91.3470981139144, 42.01936919607101],
+                  [-91.3470981139144, 42.00672583589227],
+                ],
+              ],
+            },
+          },
+        ],
+      };
 
-        map.fitBounds(fieldsLayer.getBounds());
+      function getDrainageColor(drainage) {
+        if (!drainage) return '#9E9E9E';
+        if (drainage.includes('Excessively')) return '#1565C0';
+        if (drainage.includes('Well drained')) return '#43A047';
+        if (drainage.includes('Somewhat')) return '#FFA000';
+        if (drainage.includes('Poorly')) return '#C62828';
+        if (drainage.includes('Moderately')) return '#7CB342';
+        return '#9E9E9E';
+      }
+
+      function getCropColor(crop) {
+        if (crop === 'corn') return '#2E7D32';
+        if (crop === 'soybeans') return '#F9A825';
+        return '#9E9E9E';
+      }
+
+      var fieldsLayer = L.geoJSON(fieldData, {
+        style: function (feature) {
+          return {
+            color: '#1B5E20',
+            weight: 2,
+            fillColor: getDrainageColor(feature.properties.drainagecl),
+            fillOpacity: 0.6,
+          };
+        },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties;
+          var popupContent =
+            '<b>Field:</b> ' +
+            props.field_id +
+            '<br>' +
+            '<b>Area:</b> ' +
+            props.area_acres.toFixed(1) +
+            ' acres<br>' +
+            '<b>Crop:</b> ' +
+            props.crop_name +
+            '<br>' +
+            '<hr style="margin: 8px 0;">' +
+            '<b>Soil Type:</b> ' +
+            (props.compname || 'N/A') +
+            '<br>' +
+            '<b>Drainage:</b> ' +
+            (props.drainagecl || 'N/A') +
+            '<br>' +
+            '<b>Organic Matter:</b> ' +
+            (props.om_r ? props.om_r + '%' : 'N/A') +
+            '<br>' +
+            '<b>pH:</b> ' +
+            (props.ph1to1h2o_r || 'N/A') +
+            '<br>' +
+            '<b>Clay:</b> ' +
+            (props.claytotal_r ? props.claytotal_r + '%' : 'N/A') +
+            '<br>' +
+            '<b>Sand:</b> ' +
+            (props.sandtotal_r ? props.sandtotal_r + '%' : 'N/A') +
+            '<br>' +
+            '<b>Silt:</b> ' +
+            (props.silttotal_r ? props.silttotal_r + '%' : 'N/A');
+          layer.bindPopup(popupContent);
+        },
+      }).addTo(map);
+
+      map.fitBounds(fieldsLayer.getBounds());
     </script>
-</body>
+  </body>
 </html>
